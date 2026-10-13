@@ -1,0 +1,30 @@
+{
+  "name": "pool-quote",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Swimming pool quotation application \u2014 create, price, PDF and share quotes.",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "setup": "npm install && npm run build -w @pool-quote/shared && npm run db:generate && npm run db:migrate -- --name init && npm run db:seed",
+    "dev": "npm run build -w @pool-quote/shared && concurrently -k -n shared,api,web -c gray,cyan,magenta \"npm run dev -w @pool-quote/shared\" \"npm run dev -w @pool-quote/server\" \"npm run dev -w @pool-quote/web\"",
+    "build": "npm run build -w @pool-quote/shared && npm run build -w @pool-quote/server && npm run build -w @pool-quote/web",
+    "start": "npm run start -w @pool-quote/server",
+    "typecheck": "npm run build -w @pool-quote/shared && npm run typecheck -w @pool-quote/server && npm run typecheck -w @pool-quote/web",
+    "test": "npm run build -w @pool-quote/shared && npm run test -w @pool-quote/shared && npm run test -w @pool-quote/server",
+    "db:generate": "npm run db:generate -w @pool-quote/server",
+    "db:migrate": "npm run db:migrate -w @pool-quote/server --",
+    "db:deploy": "npm run db:deploy -w @pool-quote/server",
+    "db:seed": "npm run db:seed -w @pool-quote/server",
+    "db:studio": "npm run db:studio -w @pool-quote/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "~5.9.3"
+  }
+}

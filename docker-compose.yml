@@ -1,0 +1,32 @@
+# Local development services. The app itself runs with `npm run dev`.
+#   docker compose up -d      start PostgreSQL + Mailpit
+#   docker compose down       stop them (data is kept in the named volume)
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: poolquote
+      POSTGRES_PASSWORD: poolquote
+      POSTGRES_DB: poolquote
+    ports:
+      - '5434:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U poolquote']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Catches every email the app sends so you can test "Email quotation" safely.
+  # Open http://localhost:8025 to read them.
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+volumes:
+  pgdata:
